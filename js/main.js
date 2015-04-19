@@ -1,23 +1,73 @@
-var renderer, stage, game, lastT = new Date();
+var Primer = Ember.Application.create({
+  rootElement: '.app-container'
+});
 
-function init() {
-  stage = new PIXI.Stage(0xeeeeee);
-  renderer = new PIXI.WebGLRenderer(
-      window.innerWidth, 300);
-  document.getElementById('game').appendChild(renderer.view);
+Primer.Router.map(function() {
+  this.resource('level', {path: '/:name'}, function() {
+  });
+});
 
-  game = new Game(stage);
+Primer.IndexRoute = Ember.Route.extend({});
+Primer.LevelRoute = Ember.Route.extend({
+  model: function(params) {
+    return $.getJSON('levels/' + params.name + '.json');
+  }
+});
 
-  requestAnimFrame(animate);
-}
+Primer.LevelView = Ember.View.extend({
+  didInsertElement: function() {
+    this._createGame();
+  },
+  willClearRender: function() {
+    this._removeGame();
+  },
+  _createGame: function() {
+    if (this._game) { throw new Error('game exists'); }
+    this._game = new Game(this.$('.game'),
+      this.get('controller.model'));
+    this._anim = requestAnimationFrame(this._animate.bind(this));    
+  },
+  _removeGame: function() {
+    if (!this._game) { throw new Error('game does not exist'); }
+    cancelAnimationFrame(this._anim);
+    this._game.destroy();
+    this._game = null;
+  },
+  _animate: function() {
+    this._game.update();
+    this._anim = requestAnimationFrame(this._animate.bind(this));
+  },
+  levelDidChange: function() {
+    if (this.state !== 'inDOM') { return; }
+    this._removeGame();
+    this._createGame();
+  }.observes('controller.model')
+});
 
+Primer.LevelController = Ember.Controller.extend({
+  needs: ['levelSpeciesArray'],
+  speciesArray: Ember.computed.alias('controllers.levelSpeciesArray')
+});
 
-function animate() {
-  var now = new Date();
-  game.update(now - lastT);
-  lastT = now;
-  renderer.render(stage);
-  requestAnimFrame(animate);
-}
+Primer.LevelSpeciesArrayController = Ember.ArrayController.extend({
+  needs: ['level'],
+  content: Ember.computed.alias('controllers.level.model.species'),
+  itemController: 'levelSpecies'
+});
 
-$(init);
+Primer.LevelSpeciesController = Ember.Controller.extend({
+  needs: ['level'],
+  start: Ember.computed.alias('controllers.level.model.start'),
+  name: Ember.computed.alias('content.name'),
+  startingPopulation: function(key, value) {
+    if (arguments.length === 1) {
+      return this.get('start.population')[this.get('name')];
+    } else {
+      if (!isNaN(parseInt(value, 10))) {
+        this.get('start.population')[this.get('name')] = parseInt(value, 10);
+        this.get('controllers.level').notifyPropertyChange('model');
+      }
+      return value;
+    }
+  }.property('content')
+});

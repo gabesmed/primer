@@ -3,4 +3,45 @@ body {
     margin: 0;
     font-family: sans-serif;
 }
-h1 { font-size: 50px; }
+.header {
+    padding: 10px;
+    font-size: 50px;
+    background-color: #8e93d5;
+    color: white;
+}
+
+.levels {
+    padding: 6px;
+    border-bottom: 1px solid #8e93d5;
+}
+
+.levels a, .levels a:visited {
+    color: #8e93d5;
+    padding: 3px;
+    text-decoration: none;
+    border-radius: 3px;
+}
+.levels a.active {
+    background-color: #8e93d5;
+    color: white;
+}
+
+.game {
+    width: 100%;
+    height: 300px;
+    margin-bottom: 10px;
+}
+
+.species-array { overflow: auto; padding: 10px; }
+.species {
+    float: left;
+    width: 100px;
+    margin-right: 10px;
+    background: #eee;
+    padding: 5px;
+}
+.species .name {}
+
+.species .field { overflow: auto; }
+.species .label { float: left; }
+.species input { float: right; width: 3em; }

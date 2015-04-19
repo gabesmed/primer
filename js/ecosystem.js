@@ -1,11 +1,16 @@
 /**
  * History of an ecosystem. Can only add states.
  */
-var Ecosystem = function(state) {
+var Ecosystem = function(speciesArray, initialStateData) {
+  this.speciesArray = {};
+  speciesArray.forEach(function(species) {
+    this.speciesArray[species.name] = species;
+  }, this);
+  var state = new Ecostate(this, initialStateData);
   this.states = [state];
   this.maxpops = {};
-  for (var being in state.population) {
-    this.maxpops[being] = state.population[being];
+  for (var species in state.population) {
+    this.maxpops[species] = state.population[species];
   }
 };
 
@@ -13,9 +18,9 @@ Ecosystem.prototype.constructor = Ecosystem;
 
 Ecosystem.prototype.iterate = function() {
   var nextState = this.states[this.states.length - 1].next();
-  for (var being in nextState.population) {
-    this.maxpops[being] = Math.max(this.maxpops[being],
-      nextState.population[being]);
+  for (var species in nextState.population) {
+    this.maxpops[species] = Math.max(this.maxpops[species],
+      nextState.population[species]);
   }
   this.states.push(nextState);
 };
@@ -23,56 +28,43 @@ Ecosystem.prototype.iterate = function() {
 /**
  * State of an ecosystem. Immutable.
  */
-var Ecostate = function(population) {
-  this.population = population;
+var Ecostate = function(ecosystem, data) {
+  this.ecosystem = ecosystem;
+  this.population = data.population;
 };
 
 Ecostate.prototype.constructor = Ecostate;
 
 Ecostate.prototype.next = function() {
   var nextPop = {};
-  for (var being in this.population) {
-    nextPop[being] = this.nextBeingPopulation(being);
+  for (var species in this.population) {
+    nextPop[species] = this.nextBeingPopulation(species);
   }
-  return new Ecostate(nextPop);
+  return new Ecostate(this.ecosystem, {population: nextPop});
 };
 
-Ecostate.prototype.nextBeingPopulation = function(being) {
-  var type = BEINGS[being];
-  var pop = this.population[being];
-  var growthRate = this.beingGrowthRate(being);
-  // console.log(being, growthRate);
-  var delta = 0.1;
+Ecostate.prototype.nextBeingPopulation = function(speciesName) {
+  var type = this.ecosystem.speciesArray[speciesName];
+  var pop = this.population[speciesName];
+  var growthRate = this.speciesGrowthRate(speciesName);
+  // console.log(speciesName, growthRate);
+  var delta = 0.01;
   return Math.max(0, pop + growthRate * delta);
 };
 
-Ecostate.prototype.beingGrowthRate = function(being) {
-  var type = BEINGS[being];
+Ecostate.prototype.speciesGrowthRate = function(speciesName) {
+  var type = this.ecosystem.speciesArray[speciesName];
 
-  // Population change phase: increased base on population of the things
-  // we eat.
+  // Eating
   var growthRate = 0;
-  for (var other in type.eats) {
+  for (var other in (type.eats || {})) {
     growthRate += type.eats[other] * this.population[other];
   }
-
-  // Getting eaten rate.
-  if (this.population[being] > 0) {
-    for (other in this.population) {
-      if (BEINGS[other].eats && BEINGS[other].eats[being]) {
-        growthRate -= BEINGS[other].eats[being] *
-          this.population[other] /
-          // to turn into a decline rate not amt
-          this.population[being];
-      }
-    }
+  for (other in (type.eaten || {})) {
+    growthRate -= type.eaten[other] * this.population[other];
   }
 
   // Spawn phase: increase if necessary.
-  growthRate += (type.spawns || 0);
-
-  // Die phase: decrease if necessary.
-  growthRate -= (type.dies || 0);
-
+  growthRate += (type.growth || 0);
   return growthRate;
 };

@@ -1,0 +1,22 @@
+{
+  "species": [{
+      "name": "wolves",
+      "eats": {"sheep": 2},
+      "growth": -20
+    }, {
+      "name": "sheep",
+      "eats": {"grass": 1, "wolves": -2},
+      "growth": -1
+    }, {
+      "name": "grass",
+      "eats": {"sheep": -1},
+      "growth": 1
+  }],
+  "start": {
+    "population": {
+      "wolves": 1,
+      "sheep": 1,
+      "grass": 5
+    }
+  }
+}

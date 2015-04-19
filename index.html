@@ -4,17 +4,50 @@
   <title>Primer</title>
   <link rel='stylesheet' href='lib/reset.css'/>
   <link rel='stylesheet' href='style.css'/>
+
   <script src="lib/jquery.js"></script>
   <script src="lib/pixi.js"></script>
-  <script src="js/beings.js"></script>
+  <script src="lib/handlebars.js"></script>
+  <script src="lib/ember.js"></script>
+
   <script src="js/ecosystem.js"></script>
   <script src="js/game.js"></script>
   <script src="js/main.js"></script>
 </head>
 <body>
-  <h1>Primer</h1>
-  <div id='game'>
-      
-  </div>
+
+  <div class='header'>Primer</div>
+
+  <div class='app-container'></div>
+
+  <script type='text/x-handlebars' data-template-name='application'>
+    <div class='levels'>
+      {{link-to "Instructions" "index"}}
+      {{link-to "Level 1" "level" "level1"}}
+      {{link-to "Level 2" "level" "level2"}}
+    </div>
+    {{outlet}}
+  </script>
+
+  <script type='text/x-handlebars' data-template-name='index'>
+    instructions
+  </script>
+
+  <script type='text/x-handlebars' data-template-name='level'>
+    <div class='game'></div>
+
+    <div class='species-array'>
+      {{#each species in speciesArray}}
+        <div class='species'>
+          <h3 class='name'>{{species.name}}</h3>
+          <div class='field'>
+            <label> pop </label>
+            {{input type=number value=species.startingPopulation}}
+          </div>
+        </div>
+      {{/each}}
+    </div>
+  </script>
+
 </body>
 </html>
