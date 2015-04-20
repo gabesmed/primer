@@ -46,7 +46,12 @@ Primer.LevelView = Ember.View.extend({
 
 Primer.LevelController = Ember.Controller.extend({
   needs: ['levelSpeciesArray'],
-  speciesArray: Ember.computed.alias('controllers.levelSpeciesArray')
+  speciesArray: Ember.computed.alias('controllers.levelSpeciesArray'),
+  actions: {
+    reset: function() {
+      this.notifyPropertyChange('model');
+    }
+  }
 });
 
 Primer.LevelSpeciesArrayController = Ember.ArrayController.extend({
@@ -64,10 +69,15 @@ Primer.LevelSpeciesController = Ember.Controller.extend({
       return this.get('start.population')[this.get('name')];
     } else {
       if (!isNaN(parseInt(value, 10))) {
-        this.get('start.population')[this.get('name')] = parseInt(value, 10);
-        this.get('controllers.level').notifyPropertyChange('model');
+        this.get('start.population')[this.get('name')] =
+          parseInt(value, 10);
       }
       return value;
     }
-  }.property('content')
+  }.property('content'),
+  actions: {
+    reset: function() {
+      this.get('controllers.level').send('reset');
+    }
+  }
 });

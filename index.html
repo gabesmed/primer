@@ -5,6 +5,7 @@
   <link rel='stylesheet' href='lib/reset.css'/>
   <link rel='stylesheet' href='style.css'/>
 
+  <script src="lib/underscore.js"></script>
   <script src="lib/jquery.js"></script>
   <script src="lib/pixi.js"></script>
   <script src="lib/handlebars.js"></script>
@@ -30,7 +31,9 @@
   </script>
 
   <script type='text/x-handlebars' data-template-name='index'>
-    instructions
+    <div class='welcome'>
+      welcome!
+    </div>
   </script>
 
   <script type='text/x-handlebars' data-template-name='level'>
@@ -42,11 +45,13 @@
           <h3 class='name'>{{species.name}}</h3>
           <div class='field'>
             <label> pop </label>
-            {{input type=number value=species.startingPopulation}}
+            {{input type="number" value=species.startingPopulation action="reset"}}
           </div>
         </div>
       {{/each}}
     </div>
+
+    <button {{action "reset"}}>Reset</button>
   </script>
 
 </body>

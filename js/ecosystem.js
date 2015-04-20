@@ -6,7 +6,7 @@ var Ecosystem = function(speciesArray, initialStateData) {
   speciesArray.forEach(function(species) {
     this.speciesArray[species.name] = species;
   }, this);
-  var state = new Ecostate(this, initialStateData);
+  var state = new Ecostate(this, $.extend(true, {}, initialStateData));
   this.states = [state];
   this.maxpops = {};
   for (var species in state.population) {
@@ -55,13 +55,22 @@ Ecostate.prototype.nextBeingPopulation = function(speciesName) {
 Ecostate.prototype.speciesGrowthRate = function(speciesName) {
   var type = this.ecosystem.speciesArray[speciesName];
 
+  if (this.population[speciesName] === 0) { return 0; }
+
   // Eating
   var growthRate = 0;
-  for (var other in (type.eats || {})) {
-    growthRate += type.eats[other] * this.population[other];
+  var other;
+  var proportion;
+
+  for (other in (type.eats || {})) {
+    proportion = this.population[other] /
+      this.population[speciesName];
+    growthRate += type.eats[other] * proportion;
   }
-  for (other in (type.eaten || {})) {
-    growthRate -= type.eaten[other] * this.population[other];
+  for (other in (type.eatenBy || {})) {
+    proportion = this.population[other] /
+      this.population[speciesName];
+    growthRate -= type.eatenBy[other] * proportion;
   }
 
   // Spawn phase: increase if necessary.

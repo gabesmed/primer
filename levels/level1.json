@@ -5,13 +5,13 @@
       "growth": -2
     }, {
       "name": "sheep",
-      "eats": {"grass": 1},
-      "eaten": {"wolves": 2},
+      "eats": {"grass": 0.5},
+      "eatenBy": {"wolves": 2},
       "growth": -1
     }, {
       "name": "grass",
-      "eaten": {"sheep": 1},
-      "growth": 1
+      "eatenBy": {"sheep": 0.5},
+      "growth": 0.1
   }],
   "start": {
     "population": {

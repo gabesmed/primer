@@ -2,21 +2,22 @@
   "species": [{
       "name": "wolves",
       "eats": {"sheep": 2},
-      "growth": -20
+      "growth": -2
     }, {
       "name": "sheep",
-      "eats": {"grass": 1, "wolves": -2},
+      "eats": {"grass": 0.5},
+      "eatenBy": {"wolves": 2},
       "growth": -1
     }, {
       "name": "grass",
-      "eats": {"sheep": -1},
-      "growth": 1
+      "eatenBy": {"sheep": 0.5},
+      "growth": 0.1
   }],
   "start": {
     "population": {
-      "wolves": 1,
-      "sheep": 1,
-      "grass": 5
+      "wolves": 3,
+      "sheep": 5,
+      "grass": 10
     }
   }
 }
