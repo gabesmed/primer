@@ -10,15 +10,22 @@ var Game = function(sel, data) {
   this.graphics = new PIXI.Graphics();
   this.graphics.position.set(10, 10);
   this.stage.addChild(this.graphics);
+
   this._labels = {};
+  this.isRunning = false;
+  this.update(true);
 };
 
 Game.prototype.constructor = Game;
 
-Game.prototype.update = function() {
-  this.ecosystem.iterate();
-  this.draw();
-  this.renderer.render(this.stage);
+Game.prototype.update = function(forceDraw) {
+  if (this.isRunning) {
+    this.ecosystem.iterate();    
+  }
+  if (forceDraw || this.isRunning) {
+    this.draw();
+    this.renderer.render(this.stage);
+  }
 };
 
 Game.prototype.destroy = function() {

@@ -11,7 +11,11 @@ function createPrimer(name, rootElement, levels) {
     location: 'none'
   });
 
-  Primer.IndexRoute = Ember.Route.extend({});
+  Primer.IndexRoute = Ember.Route.extend({
+    setupController: function() {
+      this.transitionTo('level', levels[0].name);
+    }
+  });
   Primer.LevelRoute = Ember.Route.extend({
     model: function(params) {
       return $.getJSON('levels/' + params.name + '.json');
@@ -26,38 +30,55 @@ function createPrimer(name, rootElement, levels) {
     didInsertElement: function() {
       this._createGame();
     },
+
     willClearRender: function() {
       this._removeGame();
     },
+
     _createGame: function() {
       if (this._game) { throw new Error('game exists'); }
       this._game = new Game(this.$('.game'),
         this.get('controller.model'));
       this._anim = requestAnimationFrame(this._animate.bind(this));    
+      this.set('controller.game', this._game);
     },
+
     _removeGame: function() {
       if (!this._game) { throw new Error('game does not exist'); }
       cancelAnimationFrame(this._anim);
       this._game.destroy();
       this._game = null;
+      this.set('controller.game', null);
     },
+
     _animate: function() {
       this._game.update();
       this._anim = requestAnimationFrame(this._animate.bind(this));
     },
+
     levelDidChange: function() {
       if (this.state !== 'inDOM') { return; }
       this._removeGame();
       this._createGame();
-    }.observes('controller.model')
+    }.observes('controller.model'),
+
+    click: function(e) {
+      if (e.target.tagName === 'CANVAS' && this._game) {
+        if (!this._game.isRunning) {
+          this._game.isRunning = true;
+        }
+      }
+    }
   });
 
   Primer.LevelController = Ember.Controller.extend({
     needs: ['levelSpeciesArray'],
     speciesArray: Ember.computed.alias('controllers.levelSpeciesArray'),
+    game: null,
     actions: {
       reset: function() {
         this.notifyPropertyChange('model');
+        this.get('game').isRunning = true;
       }
     }
   });
@@ -98,5 +119,6 @@ createPrimer('game-1', '.game-container-1', [
 ]);
 
 createPrimer('game-2', '.game-container-2', [
-  {title: 'Level 2', name: 'level2'}
+  {title: 'Level 2', name: 'level2'},
+  {title: 'Level 3', name: 'level3'}
 ]);

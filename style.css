@@ -5,28 +5,25 @@ body {
 }
 
 /* Content section */
-.section {
+.content-section {
     padding: 50px;
-    box-shadow: inset 0px 30px 100px rgba(0,0,0,0.2);
-}
-.section-1 { background-color: #8e93d5; }
-.section-2 { background-color: #f39451; }
-.section-3 { background-color: #513428; }
+    box-shadow: inset 0px 30px 100px rgba(0,0,0,0.2); }
+.content-section-1 { background-color: #8e93d5; }
+.content-section-2 { background-color: #f39451; }
+.content-section-3 { background-color: #513428; }
+.content-section h1 { opacity: 0.7; font-size: 50px; color: white; margin-bottom: 0.75em; }
+.content-section p { padding: 10px; }
 
-.section h1 {
-    font-size: 50px;
-    color: white;
-    margin-bottom: 0.75em;
-}
-
-.section p {
-    padding: 10px;
+/* Game container */
+.game-container {
+    min-height: 400px;
+    margin-bottom: 10px;
 }
 
 /* Level selection */
 .levels {
     padding: 6px;
-    border-bottom: 1px solid #8e93d5;
+    background-color: #ddd;
 }
 
 .levels a, .levels a:visited {
@@ -40,18 +37,12 @@ body {
     color: white;
 }
 
-.welcome {
-    padding: 10px;
-}
-
-.game {
-    width: 100%;
-    height: 300px;
-    margin-bottom: 10px;
-}
+/* Game */
+.game { width: 100%; height: 300px; }
+.game-ui { padding: 10px; margin-bottom: 10px; }
 
 /* Game UI */
-.species-array { overflow: auto; padding: 10px; }
+.species-array { overflow: auto; margin-bottom: 10px; }
 .species {
     float: left;
     width: 100px;
@@ -64,3 +55,11 @@ body {
 .species .field { overflow: auto; }
 .species .label { float: left; }
 .species input { float: right; width: 3em; }
+
+
+/* custom colors */
+.game-container-1 .levels a { color: #8e93d5; }
+.game-container-1 .levels a.active { background-color: #8e93d5; color: white;}
+.game-container-2 .levels a { color: #f39451; }
+.game-container-2 .levels a.active { background-color: #f39451; color: white;}
+.game-container-3 .levels a.active { background-color: #513428; }

@@ -17,28 +17,27 @@
 </head>
 <body>
 
-  <div class='section section-1'>
+  <div class='content-section content-section-1'>
     <h1>Introduction</h1>
     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
   </div>
 
-  <div class='game-container-1'></div>
+  <div class='game-container game-container-1'></div>
 
-  <div class='section section-2'>
+  <div class='content-section content-section-2'>
     <h1>Another content section</h1>
     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
   </div>
 
-  <div class='game-container-2'></div>
+  <div class='game-container game-container-2'></div>
 
-  <div class='section section-3'>
+  <div class='content-section content-section-3'>
     <h1>Another content section</h1>
     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
   </div>
 
   <script type='text/x-handlebars' data-template-name='application'>
     <div class='levels'>
-      {{link-to "Instructions" "index"}}
       {{#each level in controller.levels}}
         {{link-to level.title "level" level.name}}
       {{/each}}
@@ -55,19 +54,20 @@
   <script type='text/x-handlebars' data-template-name='level'>
     <div class='game'></div>
 
-    <div class='species-array'>
-      {{#each species in speciesArray}}
-        <div class='species'>
-          <h3 class='name'>{{species.name}}</h3>
-          <div class='field'>
-            <label> pop </label>
-            {{input type="number" value=species.startingPopulation action="reset"}}
+    <div class='game-ui'>
+      <div class='species-array'>
+        {{#each species in speciesArray}}
+          <div class='species'>
+            <h3 class='name'>{{species.name}}</h3>
+            <div class='field'>
+              <label> pop </label>
+              {{input type="number" value=species.startingPopulation action="reset"}}
+            </div>
           </div>
-        </div>
-      {{/each}}
+        {{/each}}
+      </div>
+      <button {{action "reset"}}>Reset</button>
     </div>
-
-    <button {{action "reset"}}>Reset</button>
   </script>
 
 </body>
