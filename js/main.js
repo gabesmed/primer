@@ -29,10 +29,13 @@ function createPrimer(name, rootElement, levels) {
   Primer.LevelView = Ember.View.extend({
     didInsertElement: function() {
       this._createGame();
+      $(window).on('scroll.primer', this._onWindowScroll.bind(this)); 
+      this._onWindowScroll();
     },
 
     willClearRender: function() {
       this._removeGame();
+      $(window).off('scroll.primer');
     },
 
     _createGame: function() {
@@ -51,6 +54,16 @@ function createPrimer(name, rootElement, levels) {
       this.set('controller.game', null);
     },
 
+    _onWindowScroll: function() {
+      var rect = this.$('canvas')[0].getBoundingClientRect();
+      if (window.innerHeight - rect.top > 200) {
+        // top of game is in view of window
+        if (!this._game.isRunning) {
+          this._game.isRunning = true;
+        }
+      }
+    },
+
     _animate: function() {
       this._game.update();
       this._anim = requestAnimationFrame(this._animate.bind(this));
@@ -58,17 +71,11 @@ function createPrimer(name, rootElement, levels) {
 
     levelDidChange: function() {
       if (this.state !== 'inDOM') { return; }
+      var isFirst = (!this._game);
       this._removeGame();
       this._createGame();
-    }.observes('controller.model'),
-
-    click: function(e) {
-      if (e.target.tagName === 'CANVAS' && this._game) {
-        if (!this._game.isRunning) {
-          this._game.isRunning = true;
-        }
-      }
-    }
+      if (!isFirst) { this._game.isRunning = true; }
+    }.observes('controller.model')
   });
 
   Primer.LevelController = Ember.Controller.extend({
